@@ -1,28 +1,80 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Notícias - Mídia Indoor</title>
-  <style>
-    body { font-family: Arial, sans-serif; background-color: #111; color: #fff; padding: 10px; }
-    .noticia { margin-bottom: 20px; border-bottom: 1px solid #444; padding-bottom: 10px; }
-    .titulo { font-size: 20px; font-weight: bold; color: #1E90FF; }
-    .descricao { font-size: 16px; margin-top: 5px; }
-    .data { font-size: 14px; color: #ccc; }
-    .imagem { width: 100%; max-height: 200px; object-fit: cover; margin-top: 10px; border-radius: 8px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previsão do Tempo - Ubaí, MG</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(to bottom, #87CEEB, #ffffff);
+        }
+
+        .weather-container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        #weather-info {
+            font-size: 1.5em;
+        }
+
+        @media (max-width: 768px) {
+            #weather-info {
+                font-size: 1.2em;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h2>📰 Últimas Notícias Esportivas</h2>
+    <div class="weather-container">
+        <h1>Previsão do Tempo para Ubaí, MG</h1>
+        <div id="weather-info">
+            <p>Carregando...</p>
+        </div>
+    </div>
 
-      <div class="noticia">
-        <a href="https://www.noticiasaominuto.com.br/esporte/2262356/zubeldia-surpreende-para-recuperar-parte-do-prestigio-perdido-no-sao-paulo?utm_source=rss-esporte&utm_medium=rss&utm_campaign=rssfeed" target="_blank" class="titulo">Zubeldía surpreende para recuperar parte do prestígio perdido no São Paulo</a>
-        <p class="descricao">A variação tática do Tricolor foi uma surpresa para a partida. Não foi a primeira vez que Zubeldía escalou três zagueiros, mas talvez tenha sido o melhor desempenho da equipe com o sistema tático</p>
-        <img src="https://media-manager.noticiasaominuto.com.br/1920/naom_6628eb59560ae.webp" alt="Imagem da notícia" class="imagem" />
-        <p class="data">📅 2025-02-24 11:24:00</p>
-      </div>
+    <script>
+        async function fetchWeather() {
+            const apiKey = 'SUA_CHAVE_API'; // Substitua pela sua chave da API
+            const city = 'Ubaí,MG';
+            const url = `https://api.hgbrasil.com/weather?format=json-cors&key=${apiKey}&city_name=${encodeURIComponent(city)}`;
 
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data && data.results) {
+                    const weather = data.results;
+                    document.getElementById('weather-info').innerHTML = `
+                        <p><strong>Temperatura:</strong> ${weather.temp}°C</p>
+                        <p><strong>Condição:</strong> ${weather.description}</p>
+                        <p><strong>Umidade:</strong> ${weather.humidity}%</p>
+                        <p><strong>Vento:</strong> ${weather.wind_speedy}</p>
+                    `;
+                } else {
+                    document.getElementById('weather-info').innerHTML = '<p>Não foi possível obter os dados meteorológicos.</p>';
+                }
+            } catch (error) {
+                document.getElementById('weather-info').innerHTML = '<p>Erro ao carregar os dados.</p>';
+            }
+        }
+
+        // Atualiza os dados a cada 10 minutos
+        fetchWeather();
+        setInterval(fetchWeather, 600000);
+    </script>
 </body>
 </html>
